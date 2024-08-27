@@ -1,0 +1,6 @@
+package com.akashsoam.kaltak.models
+
+data class Source(
+    val id: String,
+    val name: String
+)
