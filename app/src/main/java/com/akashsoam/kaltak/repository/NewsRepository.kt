@@ -5,7 +5,7 @@ import com.akashsoam.kaltak.db.ArticleDatabase
 import com.akashsoam.kaltak.models.Article
 
 class NewsRepository(val db: ArticleDatabase) {
-    suspend fun getHeadLines(countryCode: String, pageNumber: Int) =
+    suspend fun getHeadlines(countryCode: String, pageNumber: Int) =
         RetrofitInstance.api.getTopHeadlines(countryCode, pageNumber)
 
     suspend fun searchNews(searchQuery: String, pageNumber: Int) =
