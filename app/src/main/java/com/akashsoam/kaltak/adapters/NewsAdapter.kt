@@ -1,5 +1,6 @@
 package com.akashsoam.kaltak.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,6 +57,7 @@ class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ArticleViewHolder>() {
             articleDescription.text = article.description
             articleDateTime.text = article.publishedAt
             articleSource.text = article.source?.name
+            Log.d("NewsAdapter", "Loading image URL: ${article.urlToImage}")
             Glide.with(this).load(article.urlToImage).into(articleImage)
 
             setOnClickListener {
