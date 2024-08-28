@@ -1,20 +1,44 @@
 package com.akashsoam.kaltak.ui.fragments
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.navArgs
 import com.akashsoam.kaltak.R
+import com.akashsoam.kaltak.databinding.FragmentArticleBinding
+import com.akashsoam.kaltak.ui.NewsActivity
+import com.akashsoam.kaltak.ui.NewsViewModel
+import com.google.android.material.snackbar.Snackbar
 
-class ArticleFragment : Fragment() {
+class ArticleFragment : Fragment(R.layout.fragment_article) {
 
+    lateinit var newsViewModel: NewsViewModel
+    val args: ArticleFragmentArgs by navArgs()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_article, container, false)
+    lateinit var binding: FragmentArticleBinding
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentArticleBinding.bind(view)
+
+        newsViewModel = (activity as NewsActivity).newsViewModel
+        val article = args.article
+
+        binding.webView.apply {
+            webViewClient = WebViewClient()
+            article.url?.let { loadUrl(it) }
+        }
+
+        binding.fab.setOnClickListener {
+            newsViewModel.addToFavourites(article)
+            Snackbar.make(view, "Article saved successfully", Snackbar.LENGTH_SHORT).show()
+//            Toast.makeText(context, "Article saved successfully", Toast.LENGTH_SHORT).show()
+
+        }
+
     }
+
 
 }

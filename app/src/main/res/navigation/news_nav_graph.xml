@@ -38,8 +38,5 @@
         <argument
             android:name="article"
             app:argType="com.akashsoam.kaltak.models.Article" />
-        <argument
-            android:name="article"
-            app:argType="com.akashsoam.kaltak.models.Article" />
     </fragment>
 </navigation>
