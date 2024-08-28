@@ -120,6 +120,8 @@ class HeadlinesFragment : Fragment(R.layout.fragment_headlines) {
         isError = true
     }
 
+
+    //pagination
     val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
