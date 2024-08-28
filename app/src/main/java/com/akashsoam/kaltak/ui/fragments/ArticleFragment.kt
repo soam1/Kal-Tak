@@ -1,9 +1,9 @@
 package com.akashsoam.kaltak.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.akashsoam.kaltak.R
@@ -26,9 +26,14 @@ class ArticleFragment : Fragment(R.layout.fragment_article) {
         newsViewModel = (activity as NewsActivity).newsViewModel
         val article = args.article
 
+        // Debugging: Log the URL
+        Log.d("ArticleFragment", "Loading URL: ${article.url}")
+
+
         binding.webView.apply {
             webViewClient = WebViewClient()
-            article.url?.let { loadUrl(it) }
+//            article.url?.let { loadUrl(it) }
+            loadUrl(article.url)
         }
 
         binding.fab.setOnClickListener {

@@ -2,7 +2,10 @@ package com.akashsoam.kaltak.ui
 
 import android.app.Application
 import android.content.Context
-import android.net.NetworkCapabilities
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities.TRANSPORT_CELLULAR
+import android.net.NetworkCapabilities.TRANSPORT_ETHERNET
+import android.net.NetworkCapabilities.TRANSPORT_WIFI
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -55,18 +58,36 @@ class NewsViewModel(app: Application, private val newsRepository: NewsRepository
         return Resource.Error(response.message())
     }
 
+    //    private fun handleSearchNewsResponse(response: retrofit2.Response<NewsResponse>): Resource<NewsResponse> {
+//        if (response.isSuccessful) {
+//            response.body()?.let { resultResponse ->
+//
+//                if (searchNewsResponse == null || newSearchQuery != oldSearchQuery) {
+//                    searchNewsPage = 1
+//                    searchNewsResponse = resultResponse
+//                    oldSearchQuery = newSearchQuery
+//                } else {
+//                    searchNewsPage++
+//                    val oldArticles = searchNewsResponse?.articles
+//                    val newArticles = resultResponse.articles
+//                    oldArticles?.addAll(newArticles)
+//                }
+//                return Resource.Success(searchNewsResponse ?: resultResponse)
+//            }
+//        }
+//        return Resource.Error(response.message())
+//    }
     private fun handleSearchNewsResponse(response: retrofit2.Response<NewsResponse>): Resource<NewsResponse> {
         if (response.isSuccessful) {
             response.body()?.let { resultResponse ->
-                if (searchNewsResponse == null || newSearchQuery != oldSearchQuery) {
-                    searchNewsPage = 1
-                    searchNewsResponse = resultResponse
-                    oldSearchQuery = newSearchQuery
+                searchNewsPage++
+                if (searchNewsResponse == null) {
+                    searchNewsResponse =
+                        resultResponse //if first page save the result to the response
                 } else {
-                    searchNewsPage++
-                    val oldArticles = searchNewsResponse?.articles
-                    val newArticles = resultResponse.articles
-                    oldArticles?.addAll(newArticles)
+                    val oldArticles = searchNewsResponse?.articles //else, add all articles to old
+                    val newArticle = resultResponse.articles //add new response to new
+                    oldArticles?.addAll(newArticle) //add new articles to old articles
                 }
                 return Resource.Success(searchNewsResponse ?: resultResponse)
             }
@@ -84,16 +105,31 @@ class NewsViewModel(app: Application, private val newsRepository: NewsRepository
         newsRepository.deleteArticle(article)
     }
 
+    //    fun internetConnection(context: Context): Boolean {
+//        (context.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager).apply {
+//            return getNetworkCapabilities(activeNetwork)?.run {
+//                when {
+//                    hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+//                    hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+//                    hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+//                    else -> false
+//                }
+//            } ?: false
+//        }
+//    }
     fun internetConnection(context: Context): Boolean {
-        (context.getSystemService(Context.CONNECTIVITY_SERVICE) as android.net.ConnectivityManager).apply {
-            return getNetworkCapabilities(activeNetwork)?.run {
-                when {
-                    hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
-                    hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
-                    hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
-                    else -> false
-                }
-            } ?: false
+        val connectivityManager = context.getSystemService(
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
+
+        val activeNetwork = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+
+        return when {
+            capabilities.hasTransport(TRANSPORT_WIFI) -> true
+            capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
+            capabilities.hasTransport(TRANSPORT_ETHERNET) -> true
+            else -> false
         }
     }
 

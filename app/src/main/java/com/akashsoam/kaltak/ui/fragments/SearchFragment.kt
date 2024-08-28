@@ -2,6 +2,7 @@ package com.akashsoam.kaltak.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AbsListView
@@ -79,6 +80,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                 }
             }
         }
+
+//        subscribe to live data
         newsViewModel.searchNews.observe(viewLifecycleOwner, Observer { response ->
             when (response) {
                 is Resource.Success<*> -> {
@@ -98,6 +101,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
                     hideProgressBar()
                     response.message?.let { message ->
                         showError(message)
+                        Log.d("SearchFragment", "An error occurred: $message")
                         Toast.makeText(activity, "An error occurred: $message", Toast.LENGTH_LONG)
                             .show()
                     }
@@ -169,6 +173,8 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
             if (shouldPaginate) {
                 newsViewModel.searchNews(binding.searchEdit.text.toString())
                 isScrolling = false
+            } else {
+                binding.recyclerSearch.setPadding(0, 0, 0, 0)
             }
         }
 

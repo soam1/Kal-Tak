@@ -46,10 +46,13 @@ class HeadlinesFragment : Fragment(R.layout.fragment_headlines) {
         errorText = viewError.findViewById(R.id.errorText)
 
         newsViewModel = (activity as NewsActivity).newsViewModel
+
+
         setupHeadlinesRecycler()
 
         newsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
+//                adding serializable article class obj to bundle
                 putSerializable("article", it)
             }
             findNavController().navigate(
@@ -126,6 +129,7 @@ class HeadlinesFragment : Fragment(R.layout.fragment_headlines) {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
 
+            //manually calculating payout numbers for pagination
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
             val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
             val visibleItemCount = layoutManager.childCount
